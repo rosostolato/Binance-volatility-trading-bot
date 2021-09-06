@@ -273,7 +273,11 @@ def convert_volume():
             pass
 
         # calculate the volume in coin from QUANTITY in USDT (default)
-        volume[coin] = float(QUANTITY / float(last_price[coin]['price']))
+        try:
+            volume[coin] = float(QUANTITY / float(last_price[coin]['price']))
+        except:
+            print(coin, last_price)
+            continue
 
         # define the volume with the correct step size
         if coin not in lot_size:
@@ -375,7 +379,7 @@ def sell_coins():
 
             # increasing TP by TRAILING_TAKE_PROFIT (essentially next time to readjust SL)
             coins_bought[coin]['take_profit'] = PriceChange + TRAILING_TAKE_PROFIT
-            coins_bought[coin]['stop_loss'] = coins_bought[coin]['take_profit'] - TRAILING_STOP_LOSS
+            coins_bought[coin]['stop_loss'] = PriceChange - TRAILING_STOP_LOSS
             if DEBUG: print(f"{coin} TP reached, adjusting TP {coins_bought[coin]['take_profit']:.2f}  and SL {coins_bought[coin]['stop_loss']:.2f} accordingly to lock-in profit")
             continue
 
